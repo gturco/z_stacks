@@ -1,0 +1,57 @@
+---
+title: "xylem_count"
+output: html_document
+---
+
+
+```{r}
+library(ggplot2)
+master <- read.csv("xylem count - MASTER.csv", header=TRUE)
+b <-  subset(master,plane=='B')
+ggplot(b,aes(log2(estrodiol_concentraion +1), ratio_xylem*100)) + geom_point(size=3) + ylab("Percent conversion to xylem") + xlab("log2 estrodiol concentation")
+```
+```{r}
+ggplot(b,aes(estrodiol_concentraion, ratio_fully_xylem)) + geom_point(size=3)  
+
+
+ggplot(b,aes(VND7_FC, ratio_xylem)) + geom_point(size=3)  
+ggplot(b,aes(VND7_FC, ratio_fully_xylem)) + geom_point(size=3)
+
+
+linear.model <- lm(formula = b$ratio_fully_xylem ~ b$estrodiol_concentraion)
+expo.x.model <- lm(formula = b$ratio_fully_xylem ~ log(b$estrodiol_concentraion+.00000000000000001))
+
+linear.model <- lm(formula = b$ratio_xylem ~ b$estrodiol_concentraion)
+expo.x.model <- lm(formula = b$ratio_xylem ~ log(b$estrodiol_concentraion+.00000000000000001))
+
+linear.model <- lm(formula = b$ratio_fully_xylem ~ b$VND7_FC)
+expo.x.model <- lm(formula = b$ratio_fully_xylem ~ log(b$VND7_FC))
+  
+linear.model.r <- summary(linear.model)$r.squared
+expo.x.model.r <- summary(expo.x.model)$r.squared
+
+ x <- rbind(linear.model.r,expo.x.model.r)
+
+ggplot(subset(master,pane=B),aes(log2(estrodiol_concentraion), log2(ratio_fully_xylem))) + geom_point() 
+```
+
+## looking at data intensity
+
+```{r}
+x <- read.table("test.txt", col.names=c("est","px","channel","experiment","pic","format"))
+ggplot(x, aes(log2(est),px, colour=channel, shape=experiment)) + geom_point() + facet_grid(~channel)
+
+x2 <- read.csv("test2.txt", col.names=c("est","px","channel","experiment","pic","format","reps"))
+ggplot(x2, aes(log2(est),px, colour=reps, shape=experiment)) + geom_point() + facet_grid(~channel)
+
+```
+
+```{r}
+
+
+y <- read.csv("xylem count - 5-10-2017.csv", header=TRUE)
+
+ggplot(y, aes(log2(estrodiol_concentraion),ratio_fully_xylem, colour=top.bottom)) + geom_point() 
+
+
+```
